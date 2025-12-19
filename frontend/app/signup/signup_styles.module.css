@@ -1,0 +1,90 @@
+/* Container principal centré */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #4a90e2, #50e3c2);
+  font-family: 'Inter', sans-serif;
+}
+
+/* Carte de signup */
+.card {
+  background-color: #ffffff;
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Titre */
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 2rem;
+}
+
+/* Formulaire */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* Inputs */
+.input {
+  padding: 0.8rem 1rem;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #000; /* Texte en noir */
+  transition: border-color 0.3s ease;
+}
+
+.input::placeholder {
+  color: #000; /* Placeholder en noir */
+}
+
+.input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+/* Bouton */
+.btn {
+  padding: 0.9rem 1rem;
+  background-color: #4a90e2;
+  color: #000; /* Texte en noir */
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #357ab8;
+  color: #fff; /* Texte blanc au hover pour contraste */
+}
+
+/* Responsive pour mobile */
+@media (max-width: 480px) {
+  .card {
+    padding: 2rem 1.5rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}
