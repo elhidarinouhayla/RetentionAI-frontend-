@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RetentionAI Frontend
 
-## Getting Started
+Interface utilisateur pour l'application RetentionAI - Solution de prédiction et prévention du turnover des employés.
 
-First, run the development server:
+##  Vue d'ensemble
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Le frontend RetentionAI permet aux professionnels RH de :
+- S'authentifier de manière sécurisée (JWT)
+- Saisir les informations d'un employé
+- Obtenir une prédiction du risque de départ
+- Visualiser automatiquement un plan de rétention personnalisé
+
+##  Technologies utilisées
+
+- **Next.js** (React Framework)
+- **TypeScript**
+- **CSS Modules** pour le styling
+- **JWT** pour l'authentification
+
+##  Structure du projet
+
+```
+frontend/
+├── app/
+│   ├── login/
+│   │   ├── page.jsx             
+│   │   └── login_styles.module.css
+│   ├── signup/
+│   │   ├── page.jsx              
+│   │   └── signup_styles.module.css
+│   ├── retention/
+│   │   ├── page.jsx              
+│   │   └── retention_styles.module.css
+│   ├── layout.tsx                
+│   ├── page.tsx                 
+│   ├── page.module.css
+│   └── globals.css
+├── public/
+├── .dockerignore
+├── Dockerfile
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+##  Installation et démarrage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prérequis
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 18+ 
+- npm ou yarn
+- Backend RetentionAI en cours d'exécution
 
-## Learn More
+### Installation locale
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Cloner le repository
+git clone <https://github.com/elhidarinouhayla/RetentionAI_Frontend.git>
+cd frontend
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Installer les dépendances
+npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Configurer les variables d'environnement
+cp .env.example .env.local
 
-## Deploy on Vercel
+# Démarrer le serveur de développement
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+L'application sera accessible sur `http://localhost:3000`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Variables d'environnement
+
+Créer un fichier `.env.local` :
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+##  Démarrage avec Docker
+
+```bash
+# Build de l'image
+docker build -t retentionai-frontend .
+
+# Lancement du container
+docker run -p 3000:3000 retentionai-frontend
+```
+
+
+
+
