@@ -72,7 +72,6 @@ export default function RetentionPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        
         console.log("Détails complets:", data.detail);
         alert("ERREUR DU SERVEUR :\n" + JSON.stringify(data.detail, null, 2));
         return;
@@ -128,6 +127,7 @@ export default function RetentionPage() {
 
   return (
     <div className={styles.container}>
+      {/* Partie gauche - Formulaire */}
       <form className={styles.form} onSubmit={handlePredict}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px' }}>
           {Object.keys(employee).map((key) => (
@@ -140,27 +140,37 @@ export default function RetentionPage() {
         <button type="submit" className={styles.btn}>Tester</button>
       </form>
       
+      {/* Partie droite - Résultats */}
       {prediction !== null && (
-        <div>
-          <h2>Résultat: {prediction}</h2>
-          <button 
-            onClick={handleGenerateRetentionPlan} 
-            className={styles.btn}
-            disabled={loading}
-          >
-            {loading ? "Génération en cours..." : "Générer Plan de Rétention"}
-          </button>
-        </div>
-      )}
+        <div className={styles.resultsWrapper}>
+          {/* Résultat */}
+          <div className={styles.circleBox}>
+            <h2 className={styles.resultTitle}>
+              Résultat: {prediction}%
+            </h2>
+            <p className={styles.resultSubtitle}>
+              {prediction > 50 ? " Risque Élevé de Départ" : " Risque Faible de Départ"}
+            </p>
+            <button 
+              onClick={handleGenerateRetentionPlan} 
+              className={styles.btn}
+              disabled={loading}
+            >
+              {loading ? "Génération en cours..." : "Générer Plan de Rétention"}
+            </button>
+          </div>
 
-      {retentionPlan && (
-        <div className={styles.retentionPlan}>
-          <h3>Plan de Rétention :</h3>
-          <ul>
-            {retentionPlan.map((plan, index) => (
-              <li key={index}>{plan}</li>
-            ))}
-          </ul>
+          {/* Plan de rétention */}
+          {retentionPlan && (
+            <div className={styles.retentionPlan}>
+              <h3>Plan de Rétention :</h3>
+              <ul>
+                {retentionPlan.map((plan, index) => (
+                  <li key={index}>{plan}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>
