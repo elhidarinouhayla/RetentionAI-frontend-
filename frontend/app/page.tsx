@@ -80,7 +80,7 @@ export default function HomePage() {
       <main className={styles.main}>
         <div className={styles.imageWrapper}>
           <Image
-            src="/ca86282c-6fb5-422a-b60b-246f804086ea.png"
+            src="/im.png"
             alt="Illustration RetentionAI"
             width={500}
             height={300}
