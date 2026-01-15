@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
+import { Users, TrendingUp, AlertCircle, CheckCircle2, Sparkles } from 'lucide-react';
 import styles from './retention_styles.module.css';
 
 export default function RetentionPage() {
@@ -33,13 +35,18 @@ export default function RetentionPage() {
   const [prediction, setPrediction] = useState(null);
   const [retentionPlan, setRetentionPlan] = useState(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  // Récupérer le token uniquement côté client
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setToken(localStorage.getItem('token'));
+      const storedToken = localStorage.getItem('token');
+      if (!storedToken) {
+        router.push('/login');
+      } else {
+        setToken(storedToken);
+      }
     }
-  }, []);
+  }, [router]);
 
   const handleChange = (e) => {
     setEmployee({ ...employee, [e.target.name]: e.target.value });
@@ -60,11 +67,11 @@ export default function RetentionPage() {
         payload[field] = parseInt(payload[field], 10) || 0;
       });
 
-      const response = await fetch('http://127.0.0.1:8001/predict', {
+      const response = await fetch('http://127.0.0.1:8000/predict', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "token" : token,
+          "token": token,
         },
         body: JSON.stringify(payload)
       });
@@ -72,7 +79,6 @@ export default function RetentionPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        console.log("Détails complets:", data.detail);
         alert("ERREUR DU SERVEUR :\n" + JSON.stringify(data.detail, null, 2));
         return;
       }
@@ -100,7 +106,7 @@ export default function RetentionPage() {
         payload[field] = parseInt(payload[field], 10) || 0;
       });
 
-      const response = await fetch('http://127.0.0.1:8001/generate_retention_plan', {
+      const response = await fetch('http://127.0.0.1:8000/generate_retention_plan', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -112,7 +118,6 @@ export default function RetentionPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        console.log("Détails complets:", data.detail);
         alert("ERREUR DU SERVEUR :\n" + JSON.stringify(data.detail, null, 2));
         return;
       }
@@ -125,54 +130,113 @@ export default function RetentionPage() {
     }
   };
 
+  const handleLogout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+    }
+    router.push('/');
+  };
+
   return (
     <div className={styles.container}>
-      {/* Partie gauche - Formulaire */}
-      <form className={styles.form} onSubmit={handlePredict}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px' }}>
-          {Object.keys(employee).map((key) => (
-            <div key={key}>
-              <label style={{fontSize: '10px'}}>{key}</label>
-              <input name={key} value={employee[key]} onChange={handleChange} className={styles.input} />
+      {/* Navigation */}
+      <nav className={styles.nav}>
+        <div className={styles.navContent}>
+          <div className={styles.logo}>
+            <div className={styles.logoIcon}>
+              <TrendingUp className={styles.icon} />
             </div>
-          ))}
+            <span className={styles.logoText}>RetentionAI</span>
+          </div>
+          <button onClick={handleLogout} className={styles.logoutBtn}>
+            Déconnexion
+          </button>
         </div>
-        <button type="submit" className={styles.btn}>Tester</button>
-      </form>
-      
-      {/* Partie droite - Résultats */}
-      {prediction !== null && (
-        <div className={styles.resultsWrapper}>
-          {/* Résultat */}
-          <div className={styles.circleBox}>
-            <h2 className={styles.resultTitle}>
-              Résultat: {prediction}%
+      </nav>
+
+      <div className={styles.main}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Analyse de Rétention</h1>
+          <p className={styles.subtitle}>Évaluez le risque de départ et générez un plan d'action</p>
+        </div>
+
+        <div className={styles.grid}>
+          {/* Formulaire */}
+          <div className={styles.formCard}>
+            <h2 className={styles.cardTitle}>
+              <Users className={styles.titleIcon} />
+              Informations Employé
             </h2>
-            <p className={styles.resultSubtitle}>
-              {prediction > 50 ? " Risque Élevé de Départ" : " Risque Faible de Départ"}
-            </p>
-            <button 
-              onClick={handleGenerateRetentionPlan} 
-              className={styles.btn}
-              disabled={loading}
-            >
-              {loading ? "Génération en cours..." : "Générer Plan de Rétention"}
+            <div className={styles.formGrid}>
+              {Object.keys(employee).map((key) => (
+                <div key={key} className={styles.inputGroup}>
+                  <label className={styles.label}>{key}</label>
+                  <input 
+                    name={key} 
+                    value={employee[key]} 
+                    onChange={handleChange} 
+                    className={styles.input} 
+                  />
+                </div>
+              ))}
+            </div>
+            <button onClick={handlePredict} className={styles.btn}>
+              Analyser le Risque
             </button>
           </div>
+          
+          {/* Résultats */}
+          {prediction !== null && (
+            <div className={styles.resultsWrapper}>
+              {/* Score */}
+              <div className={styles.scoreCard}>
+                <div className={styles.circle}>
+                  <div className={styles.circleInner}>
+                    <span className={styles.percentage}>{prediction}%</span>
+                  </div>
+                </div>
+                <div className={styles.riskHeader}>
+                  <AlertCircle className={styles.alertIcon} />
+                  <h3 className={styles.riskTitle}>
+                    {prediction > 50 ? "Risque Faible" : "Risque Élevé"}
+                  </h3>
+                </div>
+                <p className={styles.riskDesc}>
+                  {prediction > 50 
+                    ? "Cet employé présente un faible risque de départ"  
+                    : "Cet employé présente un risque significatif de départ"
+                  }
+                </p>
+                <button 
+                  onClick={handleGenerateRetentionPlan} 
+                  className={styles.btn}
+                  disabled={loading}
+                >
+                  {loading ? "Génération..." : "Générer Plan de Rétention"}
+                </button>
+              </div>
 
-          {/* Plan de rétention */}
-          {retentionPlan && (
-            <div className={styles.retentionPlan}>
-              <h3>Plan de Rétention :</h3>
-              <ul>
-                {retentionPlan.map((plan, index) => (
-                  <li key={index}>{plan}</li>
-                ))}
-              </ul>
+              {/* Plan de rétention */}
+              {retentionPlan && (
+                <div className={styles.planCard}>
+                  <h3 className={styles.planTitle}>
+                    <Sparkles className={styles.titleIcon} />
+                    Plan de Rétention Personnalisé
+                  </h3>
+                  <div className={styles.planList}>
+                    {retentionPlan.map((plan, index) => (
+                      <div key={index} className={styles.planItem}>
+                        <CheckCircle2 className={styles.checkIcon} />
+                        <p className={styles.planText}>{plan}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
