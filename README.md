@@ -10,6 +10,7 @@ Le frontend RetentionAI permet aux professionnels RH de :
 - Obtenir une prédiction du risque de départ
 - Visualiser automatiquement un plan de rétention personnalisé
 
+
 ##  Technologies utilisées
 
 - **Next.js** (React Framework)
